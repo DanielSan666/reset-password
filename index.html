@@ -6,6 +6,9 @@
     <title>Reset Password</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -38,7 +41,7 @@
             <h2 class="mt-4 text-3xl font-extrabold text-gray-900">Reset Password</h2>
             <p class="mt-2 text-sm text-gray-600">Enter your new password below</p>
         </div>
-        <form action="#" method="POST" class="space-y-6">
+        <form id="reset-password-form" class="space-y-6">
             <div>
                 <label for="new-password" class="block text-sm font-medium text-gray-700">New Password</label>
                 <input type="password" id="new-password" name="new-password" required
@@ -62,5 +65,55 @@
             </a>
         </div>
     </div>
+
+    <!-- Firebase Initialization and Logic -->
+    <script>
+        // Configuración de Firebase (reemplaza con tus credenciales)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDhSeoD3EnRXUHV78GrzvB1MWRlkpq8Xhs",
+            authDomain: "rancho-76a05.firebaseapp.com",
+            projectId: "rancho-76a05",
+            storageBucket: "rancho-76a05.firebasestorage.app",
+            messagingSenderId: "517687409180",
+            appId: "1:517687409180:web:e37aa4faca1a7b7edbfdd9",
+            measurementId: "G-SSRXXZL7DQ"
+        };
+
+        // Inicializa Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // Lógica para restablecer la contraseña
+        document.getElementById('reset-password-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            // Validar que las contraseñas coincidan
+            if (newPassword !== confirmPassword) {
+                alert('Las contraseñas no coinciden.');
+                return;
+            }
+
+            // Obtener el usuario actual
+            const user = auth.currentUser;
+
+            if (user) {
+                // Actualizar la contraseña
+                user.updatePassword(newPassword)
+                    .then(() => {
+                        alert('Contraseña actualizada correctamente.');
+                        // Redirigir al usuario a la página de inicio de sesión
+                        window.location.href = 'login.html'; // Cambia a la URL de tu página de login
+                    })
+                    .catch((error) => {
+                        alert('Error al actualizar la contraseña: ' + error.message);
+                    });
+            } else {
+                alert('No hay un usuario autenticado.');
+            }
+        });
+    </script>
 </body>
 </html>
